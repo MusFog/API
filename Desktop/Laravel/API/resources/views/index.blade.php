@@ -11,11 +11,11 @@
 
 <script>
     $(document).ready(function() {
-        $.get('/api/categories', function(data) {
-            data.forEach(function(category) {
+        $.get('/api/categories', function(response) {
+            response.data.forEach(function(category) {
                 $('#categories-list').append('<li>' + category.name + '</li>');
             });
-        });
+        })
     });
 </script>
 </body>

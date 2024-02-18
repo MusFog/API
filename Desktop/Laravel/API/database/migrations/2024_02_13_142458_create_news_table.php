@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->string('title', 100);
             $table->text('description')->nullable();
             $table->longText('content');
@@ -19,6 +19,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+
 
     public function down(): void
     {

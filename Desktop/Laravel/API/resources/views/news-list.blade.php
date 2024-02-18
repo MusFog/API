@@ -8,21 +8,16 @@
 <body>
 <h1>Новини за категорією</h1>
 <ul id="news-list"></ul>
-<div id="pagination">
-    <button id="prev">Попередня</button>
-    <span id="page-info">Сторінка <span id="number-page"></span></span>
-    <button id="next">Наступна</button>
-</div>
+<nav id="pagination"></nav>
 
 <script>
     $(document).ready(function() {
         var categoryId = {{ $categoryId }};
-        var numberPage = 1;
-
-        function fetchNews(page) {
-            $.get('/api/categories/' + categoryId + '/news?page=' + page, function(data) {
+        Newslist('/api/categories/' + categoryId + '/news');
+        function Newslist(pageUrl) {
+            $.get(pageUrl, function(response) {
                 $('#news-list').empty();
-                data.data.forEach(function(news) {
+                response.data.forEach(function(news) {
                     var listItem = '<li>' +
                         '<h2>' + news.title + '</h2>' +
                         '<img src="' + news.image + '" style="width:500px;height:auto;">' +
@@ -32,23 +27,20 @@
                         '</li>';
                     $('#news-list').append(listItem);
                 });
-                $('#number-page').text(page);
+
+                $('#pagination').empty();
+                response.meta.links.forEach(function(link) {
+                    var linkItem = $('<a>', {
+                        text: link.label,
+                        click: function(list) {
+                            list.preventDefault();
+                            Newslist(link.url);
+                        }
+                    })
+                    $('#pagination').append(linkItem);
+                });
             });
         }
-
-        fetchNews(numberPage);
-
-        $('#next').click(function() {
-            numberPage++;
-            fetchNews(numberPage);
-        });
-
-        $('#prev').click(function() {
-            if (numberPage > 1) {
-                numberPage--;
-                fetchNews(numberPage);
-            }
-        });
     });
 </script>
 </body>
